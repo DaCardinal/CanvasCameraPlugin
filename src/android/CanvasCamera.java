@@ -104,10 +104,12 @@ public class CanvasCamera extends CordovaPlugin implements CameraActivity.Canvas
 					}
 					//display camera bellow the webview
 					if(toBack){
-						webView.setBackgroundColor(0x00000000);
-						ViewGroup g = (ViewGroup)webView.getParent();
-						g.setBackgroundColor(0x00000000);
-						g.bringToFront();
+						// webView.setBackgroundColor(0x00000000);
+						// ViewGroup g = (ViewGroup)webView.getParent();
+						// g.setBackgroundColor(0x00000000);
+						// g.bringToFront();
+						webView.getView().setBackgroundColor(0x00000000);
+						((ViewGroup)webView.getView()).bringToFront();
 					}
 					else{
 						//set camera back to front
