@@ -1,0 +1,18 @@
+{
+    "version": "1.0.0",
+    "name": "com.keith.cordova.plugin.canvascamera",
+    "cordova_name": "CanvasCamera",
+    "description": "Canvas Camera",
+    "license": "Apache 2.0",
+    "repo": "https://github.com/DaCardinal/CanvasCameraPlugin.git",
+    "issue": "https://github.com/DaCardinal/CanvasCameraPlugin/issues",
+    "keywords": [
+        "CanvasCamera",
+        "Camera"
+    ],
+    "platforms": [
+        "android",
+        "ios"
+    ],
+    "engines": []
+}
