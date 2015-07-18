@@ -60,44 +60,4 @@ cordova.define("cordova/plugin/CanvasCamera", function(require, exports, module)
 });
 
 var CanvasCamera = cordova.require("cordova/plugin/CanvasCamera");
-
-
-var DestinationType = {
-    DATA_URL : 0,
-    FILE_URI : 1
-};
-
-var PictureSourceType = {
-    PHOTOLIBRARY : 0,
-    CAMERA : 1,
-    SAVEDPHOTOALBUM : 2
-};
-
-var EncodingType = {
-    JPEG : 0,
-    PNG : 1
-};
-
-var CameraPosition = {
-    BACK : 0,
-    FRONT : 1
-};
-
-var CameraPosition = {
-    BACK : 1,
-    FRONT : 2
-};
-
-var FlashMode = {
-    OFF : 0,
-    ON : 1,
-    AUTO : 2
-};
-
-CanvasCamera.DestinationType = DestinationType;
-CanvasCamera.PictureSourceType = PictureSourceType;
-CanvasCamera.EncodingType = EncodingType;
-CanvasCamera.CameraPosition = CameraPosition;
-CanvasCamera.FlashMode = FlashMode;
-
 module.exports = CanvasCamera;
