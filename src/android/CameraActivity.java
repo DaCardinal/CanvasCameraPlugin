@@ -370,7 +370,7 @@ public class CameraActivity extends Fragment {
 								    //get bitmap and compress
 								    Bitmap picture = loadBitmapFromView(view.findViewById(getResources().getIdentifier("frame_camera_cont", "id", appResourcesPackage)));
 								    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-								    picture.compress(Bitmap.CompressFormat.PNG, 80, stream);
+								    picture.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
 									generatePictureFromView(originalPicture, picture);
 									canTakePicture = true;

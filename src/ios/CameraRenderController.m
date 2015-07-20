@@ -6,6 +6,7 @@
 @implementation CameraRenderController
 @synthesize context = _context;
 @synthesize delegate;
+@dynamic view;
 
 
 
@@ -24,30 +25,30 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad]; 
+    [super viewDidLoad];
 
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 
     if (!self.context) {
         NSLog(@"Failed to create ES context");
     }
-    
+
     CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, self.context, NULL, &_videoTextureCache);
     if (err) {
         NSLog(@"Error at CVOpenGLESTextureCacheCreate %d", err);
         return;
     }
-    
+
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     view.contentMode = UIViewContentModeScaleToFill;
-    
+
     glGenRenderbuffers(1, &_renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
-    
-    self.ciContext = [CIContext contextWithEAGLContext:self.context]; 
-    
+
+    self.ciContext = [CIContext contextWithEAGLContext:self.context];
+
     if (self.dragEnabled) {
         //add drag action listener
         NSLog(@"Enabling view dragging");
@@ -68,13 +69,13 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-        selector:@selector(appplicationIsActive:) 
-        name:UIApplicationDidBecomeActiveNotification 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+        selector:@selector(appplicationIsActive:)
+        name:UIApplicationDidBecomeActiveNotification
         object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-        selector:@selector(applicationEnteredForeground:) 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+        selector:@selector(applicationEnteredForeground:)
         name:UIApplicationWillEnterForegroundNotification
         object:nil];
 
@@ -108,7 +109,7 @@
 
 - (IBAction)handlePan:(UIPanGestureRecognizer *)recognizer {
     CGPoint translation = [recognizer translationInView:self.view];
-    recognizer.view.center = CGPointMake(recognizer.view.center.x + translation.x, 
+    recognizer.view.center = CGPointMake(recognizer.view.center.x + translation.x,
                                      recognizer.view.center.y + translation.y);
     [recognizer setTranslation:CGPointMake(0, 0) inView:self.view];
 }
@@ -131,8 +132,8 @@
     if ([self.renderLock tryLock]) {
         CVPixelBufferRef pixelBuffer = (CVPixelBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
         CIImage *image = [CIImage imageWithCVPixelBuffer:pixelBuffer];
-        
-		
+
+
         CGFloat scaleHeight = self.view.frame.size.height/image.extent.size.height;
         CGFloat scaleWidth = self.view.frame.size.width/image.extent.size.width;
 
@@ -150,22 +151,22 @@
         // scale - translate
         CGAffineTransform xscale = CGAffineTransformMakeScale(scale, scale);
         CGAffineTransform xlate = CGAffineTransformMakeTranslation(-x, -y);
-        CGAffineTransform xform =  CGAffineTransformConcat(xscale, xlate); 
-        
+        CGAffineTransform xform =  CGAffineTransformConcat(xscale, xlate);
+
         CIFilter *centerFilter = [CIFilter filterWithName:@"CIAffineTransform"  keysAndValues:
                                   kCIInputImageKey, image,
                                   kCIInputTransformKey, [NSValue valueWithBytes:&xform objCType:@encode(CGAffineTransform)],
                                   nil];
 
         CIImage *transformedImage = [centerFilter outputImage];
-        
+
         // crop
         CIFilter *cropFilter = [CIFilter filterWithName:@"CICrop"];
         CIVector *cropRect = [CIVector vectorWithX:0 Y:0 Z:self.view.frame.size.width W:self.view.frame.size.height];
         [cropFilter setValue:transformedImage forKey:kCIInputImageKey];
         [cropFilter setValue:cropRect forKey:@"inputRectangle"];
         CIImage *croppedImage = [cropFilter outputImage];
-        
+
         CIFilter *filter = [self.sessionManager ciFilter];
 
         CIImage *result;
